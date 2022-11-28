@@ -87,7 +87,37 @@
     </section>
   </main>
 
+  <!-- Install TrackJS -->
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "7f3b76e362034b76aedd57f51a3860e8"
+    });
+  </script>
+
+  <script>
+
+   
+
+    /* Step 4: Custom Error */
+    class BadInputError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = "BadInputError";
+      }
+    }
+
+    /* Step 5: Global Error Handling */
+    window.onerror = function (message, url, line) {
+      let err = {};
+      err.message = message;
+      err.url = url;
+      err.line = line;
+      console.table(err); // simple method of logging it onto console.
+      TrackJS.track(err); // log the error to TrackJS
+    }
+
+
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +125,153 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+
+      // Step 4: Throw an BadInputError if any of the input is not a number.
+      if (firstNum != firstNum - 0) throw new BadInputError("firstNum is bad.");
+      if (secondNum != secondNum - 0) throw new BadInputError("secondNum is bad.");
+
+      // Step 3: Catch the error from eval
+      try {
+        output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      } catch (err) {
+        if (err instanceof SyntaxError) {
+          throw new SyntaxError("Could not evaluate the expression.");
+        }
+        console.log("Unknown error. I don't know how to handle it.");
+      } finally {
+        console.log("This executes regardless of the outcome.");
+      }
     });
 
+    // Step 2: Adding Buttons for Console Testing
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
-    // Start your code here
-    // You may move this JS to another file if you wish
+    // console.log()
+    let consoleLogBtn = errorBtns[0];
+    consoleLogBtn.addEventListener('click', () => {
+      console.log('Console Log Deme');
+    });
+
+    // console.error()
+    let consoleErrorBtn = errorBtns[1];
+    consoleErrorBtn.addEventListener('click', () => {
+      console.error('Console Error Deme');
+    });
+
+    // console.count()
+    let consoleCountBtn = errorBtns[2];
+    consoleCountBtn.addEventListener('click', () => {
+      console.count('Count Button');
+    });
+
+    // console.warn()
+    let consoleWarnBtn = errorBtns[3];
+    consoleWarnBtn.addEventListener('click', () => {
+      console.warn('Warn Button Demo');
+    });
+
+    // console.asser()
+    // only prints if the assertion is false.
+    let consoleAssertBtn = errorBtns[4];
+    consoleAssertBtn.addEventListener('click', () => {
+      let person = {name: 'Bob'};
+      console.assert(person.name == 'Kevin', person);
+    });
+
+    // console.clear()
+    let consoleClearBtn = errorBtns[5];
+    consoleClearBtn.addEventListener('click', () => {
+      console.clear();
+    });
+
+    // console.dir()
+    // display properties of JS object.
+    let consoleDirBtn = errorBtns[6];
+    consoleDirBtn.addEventListener('click', () => {
+      console.dir(consoleDirBtn);
+    });
+
+    // console.dirxml()
+    // displays an interactive tree of the descendant elements of the specified XML/HTML element
+    //   - interactive as in the developer can edit the innertext, etc, directly from the 
+    //     console.
+    let consoleDirxmlBtn = errorBtns[7];
+    consoleDirxmlBtn.addEventListener('click', () => {
+      console.dirxml(consoleDirxmlBtn);
+    });
+
+    // console.group()
+    // starts a group, where all the logs will be contained inside of this; until it ends.
+    let consoleGroupBtn = errorBtns[8];
+    consoleGroupBtn.addEventListener('click', () => {
+      console.group();
+    });
+
+    // console.groupEnd()
+    // ends the group.
+    let consoleGroupEndBtn = errorBtns[9];
+    consoleGroupEndBtn.addEventListener('click', () => {
+      console.groupEnd();
+    });
+
+    // console.table()
+    // prints array/objects in pretty format.
+    let consoleTableBtn = errorBtns[10];
+    consoleTableBtn.addEventListener('click', () => { 
+
+      let people = [
+        {name: "Bob", age: 32},
+        {name: "Carl", age: 12},
+        {name: "John", age: 98}
+      ];
+      
+      console.table(people);
+    });
+
+    // console.time()
+    // starts timer.
+    let consoleTimeBtn = errorBtns[11];
+    consoleTimeBtn.addEventListener('click', () => {
+      console.time('My Timer');
+    });
+
+    // console.timeEnd()
+    // ends timer.
+    let consoleTimeEndBtn = errorBtns[12];
+    consoleTimeEndBtn.addEventListener('click', () => {
+      console.timeEnd('My Timer');
+    });
+
+    // console.trace()
+    let where = function () {
+      let am = function () {
+        let i = function () {
+          console.trace('Trace Demo');
+        }
+        i();
+      }
+      am();
+    }
+
+    let consoleTraceBtn = errorBtns[13];
+    consoleTraceBtn.addEventListener('click', () => {
+      where();
+    });
+
+    // console global error trigger
+    let consoleGlobalBtn = errorBtns[14];
+    consoleGlobalBtn.addEventListener('click', () => {
+      boom();
+    });
+
+    // End of Part 2
+
+    
+
+
+
+
+
   </script>
 </body>
 
